@@ -8,7 +8,6 @@ const useFirebase = () => {
     const [user, setUser] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
-    const [admin, setAdmin] = useState(false);
 
 
     const auth = getAuth();
@@ -22,7 +21,7 @@ const useFirebase = () => {
                 const user = result.user;
                 saveUser(user.email, user.displayName, 'PUT');
                 setError('');
-                const destination = location?.state?.from || '/home';
+                const destination = location?.state?.from || '/';
                 history.push(destination);
             })
             .catch((error) => {
@@ -31,7 +30,7 @@ const useFirebase = () => {
             .finally(() => setIsLoading(false));
     }
 
-    //common method function
+    // common method function
     const saveUser = (email, displayName, method) => {
         const user = { email, displayName };
         fetch('https://immense-scrubland-21302.herokuapp.com/users', {
@@ -94,14 +93,6 @@ const useFirebase = () => {
         return () => unsubscribe();
     }, [auth])
 
-    // for admin
-    useEffect(() => {
-        fetch(`https://immense-scrubland-21302.herokuapp.com/users/${user.email}`)
-            .then(res => res.json())
-            .then(data => setAdmin(data.admin))
-
-    }, [user.email])
-
 
     const logOut = () => {
         setIsLoading(true);
@@ -125,7 +116,6 @@ const useFirebase = () => {
             setError,
             registerUser,
             loginUser,
-            admin,
             auth
 
         }

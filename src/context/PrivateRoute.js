@@ -5,13 +5,13 @@ import Preloader from '../components/Preloader';
 
 
 const PrivateRoute = ({ children}) => {
-    const { isLoading ,auth} = useAuth();
+    const { isLoading ,user} = useAuth();
 
     if (isLoading) {
         return <Preloader />
     }
 
-    return  auth ? children : <Navigate to="/login" />;
-};
+    return  user?.email ? children : <Navigate to="/login" />;
+}
 
 export default PrivateRoute;
