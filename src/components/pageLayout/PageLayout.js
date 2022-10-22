@@ -1,9 +1,11 @@
 import React from 'react'
+import Header from './Header'
 import SideBar from './SideBar'
 
 const PageLayout = ({ children }) => {
   return (
     <div>
+
       <div className="container my-4">
         <div className="row">
           <SideBar />
