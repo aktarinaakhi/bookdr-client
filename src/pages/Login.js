@@ -1,8 +1,7 @@
 import React from "react";
-import { useAuth } from "../lib/auth";
 import { FcGoogle } from "react-icons/fc";
 import bookShelf from "../images/bookshelf.svg"
-
+import useAuth from "../lib/useAuth";
 
 
 const Login = () => {
@@ -13,6 +12,8 @@ const Login = () => {
       style={{ height: "100vh" }}
     >
       <h5 className='mb-5'>
+        Book<strong className='text-primary '>Shelf</strong>
+        Book<strong className='text-primary '>Shelf</strong>
         Book<strong className='text-primary '>Shelf</strong>
       </h5>
       <img className='w-25 pb-4' src={bookShelf} alt='' />
