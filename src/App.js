@@ -3,7 +3,6 @@ import Header from './components/pageLayout/Header';
 import AuthProvider from './context/AuthProvider';
 import PrivateRoute from './context/PrivateRoute';
 import Discover from './pages/Discover';
-import FinishedBooks from './pages/FinishedBooks';
 import Login from './pages/Login';
 import ReadingList from './pages/ReadingList';
 import Register from './pages/Register';
@@ -35,16 +34,7 @@ function App() {
           >
             {' '}
           </Route>
-          <Route
-            path="finish"
-            element={
-              <PrivateRoute>
-                <FinishedBooks />
-              </PrivateRoute>
-            }
-          >
-            {' '}
-          </Route>
+
           <Route path="/login" element={<Login />}>
             {' '}
           </Route>

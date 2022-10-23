@@ -1,54 +1,72 @@
 import React from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import EditBook from '../components/EditBook';
 
-const BookList = ({ books, deleteBook, bookEdited }) => {
-  console.log('books length:::', books);
-  if (books.length === 0) return null;
+const BookList = () => {
+  const [todos, setTodos] = useState([]);
 
-  const TaskRow = (task, index) => {
-    return (
-      <tr key={index} className={index % 2 === 0 ? 'odd' : 'even'}>
-        <td>{task.id}</td>
-        <td>{task.task}</td>
-        <td>{task.assignee}</td>
-        <td>
-          <div className="row">
-            <div className="col-md-6">{task.status}</div>
-            <div className="col-md-3">
-              <EditBook task={task} bookEdited={bookEdited} />
-            </div>
-            <div className="col-md-3">
-              <button
-                type="button"
-                onClick={(e) => deleteBook(task.id)}
-                className="btn btn-danger right"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </td>
-      </tr>
-    );
+  //delete todo function
+
+  const deleteBook = async (id) => {
+    try {
+      const deleteTodo = await fetch(`http://localhost:5000/todos/${id}`, {
+        method: 'DELETE'
+      });
+
+      setTodos(todos.filter((todo) => todo.todo_id !== id));
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
-  const bookTable = books.map((book, index) => TaskRow(book, index));
+  const getTodos = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/todos');
+      const jsonData = await response.json();
+
+      setTodos(jsonData);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  useEffect(() => {
+    getTodos();
+  }, []);
+
+  console.log(todos);
 
   return (
-    <div className="container">
-      <h2>books</h2>
-      <table className="table table-bordered">
+    <Fragment>
+      {' '}
+      <table class="table mt-5 text-center">
         <thead>
           <tr>
-            <th>Book Id</th>
-            <th>Book Name</th>
-            <th>Assignee</th>
-            <th>Status</th>
+            <th>Description</th>
+            <th>Edit</th>
+            <th>Delete</th>
           </tr>
         </thead>
-        <tbody>{bookTable}</tbody>
+        <tbody>
+          {todos.map((todo) => (
+            <tr key={todo.todo_id}>
+              <td>{todo.description}</td>
+              <td>
+                <EditBook todo={todo} />
+              </td>
+              <td>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => deleteBook(todo.todo_id)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </table>
-    </div>
+    </Fragment>
   );
 };
 

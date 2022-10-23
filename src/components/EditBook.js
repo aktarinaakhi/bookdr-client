@@ -1,101 +1,90 @@
-import React, { useState } from 'react';
-import { Button, Modal } from 'react-bootstrap';
-import { useForm } from 'react-hook-form';
-import { editBook } from '../lib/service';
+import React, { Fragment, useState } from 'react';
 
-const EditBook = ({ task, taskEdited }) => {
-  const [show, setShow] = useState(false);
+const EditBook = ({ todo }) => {
+  const [description, setDescription] = useState(todo.description);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  //edit description function
 
-  const { register, handleSubmit } = useForm();
+  const updateDescription = async (e) => {
+    e.preventDefault();
+    try {
+      const body = { description };
+      const response = await fetch(
+        `http://localhost:5000/todos/${todo.todo_id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        }
+      );
 
-  const onSubmit = (data) => {
-    data['id'] = task.id;
-    editBook(data).then((response) => {
-      taskEdited(response);
-      setShow(false);
-    });
+      window.location = '/';
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   return (
-    <>
-      <Button variant="warning" onClick={handleShow}>
+    <Fragment>
+      <button
+        type="button"
+        class="btn btn-warning"
+        data-toggle="modal"
+        data-target={`#id${todo.todo_id}`}
+      >
         Edit
-      </Button>
+      </button>
 
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Task Edit</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="row">
-              <div className="form-group col-md-3">
-                <label htmlFor="taskId">Id</label>
-                <input
-                  {...register('id')}
-                  type="text"
-                  className="form-control"
-                  defaultValue={task.id}
-                  name="id"
-                  id="id"
-                  disabled
-                />
-              </div>
+      <div
+        class="modal"
+        id={`id${todo.todo_id}`}
+        onClick={() => setDescription(todo.description)}
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Edit Todo</h4>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                onClick={() => setDescription(todo.description)}
+              >
+                &times;
+              </button>
             </div>
-            <div className="row">
-              <div className="form-group col-md-6">
-                <label htmlFor="task">Task</label>
-                <input
-                  {...register('task')}
-                  type="text"
-                  className="form-control"
-                  defaultValue={task.task}
-                  name="task"
-                  id="task"
-                  placeholder="Create a Task"
-                />
-              </div>
+
+            <div class="modal-body">
+              <input
+                type="text"
+                className="form-control"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
             </div>
-            <div className="row">
-              <div className="form-group col-md-6">
-                <label htmlFor="assignee">Assignee</label>
-                <input
-                  {...register('assignee')}
-                  type="text"
-                  className="form-control"
-                  defaultValue={task.assignee}
-                  name="assignee"
-                  id="assignee"
-                  placeholder="Assignee"
-                />
-              </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-warning"
+                data-dismiss="modal"
+                onClick={(e) => updateDescription(e)}
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                data-dismiss="modal"
+                onClick={() => setDescription(todo.description)}
+              >
+                Close
+              </button>
             </div>
-            <div className="row">
-              <div className="form-group col-md-6">
-                <label htmlFor="status">Status:</label>
-                <select
-                  {...register('status')}
-                  name="status"
-                  defaultValue={task.status}
-                  className="form-control"
-                  id="status"
-                >
-                  <option>To Be Done</option>
-                  <option>In Progress</option>
-                  <option>Completed</option>
-                </select>
-              </div>
-            </div>
-            <div className="btncenter">
-              <input type="submit" className="btn btn-danger" />
-            </div>
-          </form>
-        </Modal.Body>
-      </Modal>
-    </>
+          </div>
+        </div>
+      </div>
+    </Fragment>
   );
 };
 
